@@ -6,7 +6,7 @@ setup(
     install_requires=requirements,
     author='Javier Dominguez',
     name='wtfuzz',
-    packages=['src'],
+    packages=['wtfuzz'],
     version='0.1',
     zip_safe=False,
 )
