@@ -129,6 +129,32 @@ class wtfuzz():
         else:
             print('Url/Payloads not correctly initialised')
 
+    def sendFullRequest_report(self, verb, folders):
+        report = []
+        payloads = self.wtfconfig.payloads
+        if verb in HTTPVERBS:
+            for item in folders:
+                if item[-1] != '/':
+                    item = item + '/'
+                self.wtfconfig.url = item
+                if (self.wtfconfig.validConfig()):
+                    url = self.wtfconfig.url
+
+                    for payload in payloads:
+                        urlp = url + payload
+                        response = getattr(requests, str(verb).lower())(urlp)
+                        fullresp = {}
+                        fullresp[CODE] = response.status_code
+                        fullresp[VERB] = str(verb).lower()
+                        fullresp[LENGTH] = len(response.content)
+                        fullresp[URL] = urlp
+                        report.append(fullresp)
+                else:
+                    print('Url/Payloads not correctly initialised')
+            else:
+                print("Error - Verb " + verb + " not valid")
+        return report
+
     def sendAllVerbsRequest_report(self, folders):
         report = []
         for item in folders:
