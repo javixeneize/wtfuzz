@@ -22,7 +22,7 @@ class wtfconfig():
             with open(filename, 'r') as file:
                 self.payloads = file.read().splitlines()
                 self.payloads.insert(0, '')  # needed to send the original request
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             self.payloads = []
             print("File not found")
 
