@@ -151,8 +151,8 @@ class wtfuzz():
                         report.append(fullresp)
                 else:
                     print('Url/Payloads not correctly initialised')
-            else:
-                print("Error - Verb " + verb + " not valid")
+        else:
+            print("Error - Verb " + verb + " not valid")
         return report
 
     def sendAllVerbsRequest_report(self, folders):
