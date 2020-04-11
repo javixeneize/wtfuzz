@@ -1,5 +1,5 @@
 import requests
-from wtfuzz.wtfconfig import wtfconfig
+from whatthefuzz.wtfconfig import wtfconfig
 
 HTTPVERBS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
 CODE = 'Code'
