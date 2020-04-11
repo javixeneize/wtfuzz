@@ -172,4 +172,3 @@ class wtfuzz():
             else:
                 print('Url/Payloads not correctly initialised')
         return report
-
