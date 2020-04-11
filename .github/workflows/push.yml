@@ -19,14 +19,8 @@ jobs:
             - name: Install PIP Dependencies
               run: pip install -r requirements_dev.txt
 
-            - name: Test with Nosetests
-              run: python -m nose --with-xunit --xunit-file=${{ matrix.python-version }}.results.xml
-
-            - name: Upload Test results
-              uses: actions/upload-artifact@master
-              with:
-                 name: Results - ${{ matrix.python-version }}
-                 path: ${{ matrix.python-version }}.results.xml
+            - name: BDD Test
+              run: python -m behave
 
             - name: Flake8 styles
               run: python -m flake8 ./wtfuzz
