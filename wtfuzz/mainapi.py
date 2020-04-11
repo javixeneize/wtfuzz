@@ -18,4 +18,3 @@ if (r.status_code == 200):
         wtf.config(url=folder, filename=filename)
         # wtf.sendAllVerbsRequest()
         wtf.sendFullRequest("GET")
-
