@@ -3,7 +3,6 @@
 .coverage
 __pycache*
 actuatortest.txt
-features/
 test/
 main.py
 testzap.txt
