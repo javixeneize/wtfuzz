@@ -4,7 +4,7 @@ from setuptools import setup
 # This call to setup() does all the work
 setup(
     name="wtfuzz",
-    version="0.0.1",
+    version="0.1.0",
     description="Web fuzzer",
     url="https://github.com/javixeneize/wtfuzz",
     author="Javier Dominguez",
