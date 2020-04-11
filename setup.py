@@ -1,11 +1,14 @@
+import pathlib
 from setuptools import setup
 
-requirements = ['requests==2.22.0',]
+# This call to setup() does all the work
 setup(
-    install_requires=requirements,
-    author='Javier Dominguez',
-    name='wtfuzz',
-    packages=['wtfuzz'],
-    version='0.1',
-    zip_safe=False,
+    name="wtfuzz",
+    version="0.0.1",
+    description="Web fuzzer",
+    url="https://github.com/javixeneize/wtfuzz",
+    author="Javier Dominguez",
+    packages=["wtfuzz"],
+    include_package_data=True,
+    install_requires=["requests==2.22.0"]
 )
