@@ -173,5 +173,3 @@ class wtfuzz():
                 print('Url/Payloads not correctly initialised')
         return report
 
-    def test(self):
-        pass
