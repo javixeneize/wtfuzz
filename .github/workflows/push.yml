@@ -19,9 +19,6 @@ jobs:
             - name: Install PIP Dependencies
               run: pip install -r requirements_dev.txt
 
-            - name: BDD Test
-              run: python -m behave
-
             - name: Flake8 styles
               run: python -m flake8 ./wtfuzz
 
