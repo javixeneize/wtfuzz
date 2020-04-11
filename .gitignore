@@ -7,3 +7,6 @@ features/
 test/
 main.py
 testzap.txt
+build/
+dist/
+*.egg*
