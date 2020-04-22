@@ -4,13 +4,62 @@ on:
   push:
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+        max-parallel: 4
+        matrix:
+          python-version: [3.7]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v1
+      
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    release:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Create GitHub release
-            uses: Roang-zero1/github-create-release-action@master
-            with:
-              version_regex: ^v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install dependencies
+        run: pip install -r requirements_dev.txt
+
+      - name: Make Wheel
+        run: |
+          python3 setup.py sdist bdist_wheel
+          
+      - name: Dump build info for release
+        run: |
+           git log --pretty=oneline > changelog
+           python3 setup.py --version > version     
+           
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v0.0.1
+          release_name: Release v0.0.1
+          draft: false
+          prerelease: false
+
+      - name: Upload Wheel
+        id: upload_wheel
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: dist/whatthefuzz-0.1.2-py3-none-any.whl
+          asset_name: wtfuzz Wheel
+          asset_content_type: application/x-python-wheel
+      
+      - name: Upload Changelog
+        id: upload_changelog
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: changelog
+          asset_name: wtfuzz changelog
+          asset_content_type: text/plain
