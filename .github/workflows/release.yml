@@ -33,6 +33,9 @@ jobs:
     - name: Safety dependency scan
       run: python -m safety check
 
+    - name: Get bumpversion
+      run: echo ::set-env name=VERSION::$(grep -i 'current_version = ' setup.cfg | head -1 | tr -d 'current_version = ')
+
     - name: Build
       run: python setup.py sdist bdist_wheel
 
@@ -66,7 +69,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist/whatthefuzz-0.1.2-py3-none-any.whl
+        asset_path: dist/whatthefuzz-${{ env.VERSION }}-none-any.whl
         asset_name: wtfuzz Wheel
         asset_content_type: application/x-python-wheel
 
