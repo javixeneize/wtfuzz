@@ -1,4 +1,4 @@
-requests==2.22.0
+requests>=2.22.0
 behave==1.2.6
 flake8==3.6.0
 bandit==1.6.2
