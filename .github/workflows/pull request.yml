@@ -28,14 +28,20 @@ jobs:
             - name: Safety dependency scan
               run: python -m safety check
 
+            - name: Checkout origin branch if PR 'to-branch' is master
+              if: github.base_ref == 'master'
+              uses: actions/checkout@v2
+              with:
+                ref: ${{ github.head_ref }}
+
             - name: BumpVersion if PR 'to-branch' is master
-                if: github.base_ref == 'master'
-                run: |
-                  grep -i 'current_version = ' setup.cfg | head -1 | tr -d 'current_version = '
-                  git config --local user.email "action@github.com"
-                  git config --local user.name "GitHub Action"
-                  bump2version minor
-                  grep -i 'current_version = ' setup.cfg | head -1 | tr -d 'current_version = '
+              if: github.base_ref == 'master'
+              run: |
+                grep -i 'current_version = ' setup.cfg | head -1 | tr -d 'current_version = '
+                git config --local user.email "action@github.com"
+                git config --local user.name "GitHub Action"
+                bump2version minor
+                grep -i 'current_version = ' setup.cfg | head -1 | tr -d 'current_version = '
 
             - name: Push changes if PR 'to-branch' is master
               if: github.base_ref == 'master'
