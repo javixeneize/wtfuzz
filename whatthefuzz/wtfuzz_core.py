@@ -143,13 +143,21 @@ class wtfuzz():
 
                     for payload in payloads:
                         urlp = url + payload
-                        response = getattr(requests, str(verb).lower())(urlp, verify=self.verify)
-                        fullresp = {}
-                        fullresp[CODE] = response.status_code
-                        fullresp[VERB] = str(verb).lower()
-                        fullresp[LENGTH] = len(response.content)
-                        fullresp[URL] = urlp
+                        try:
+                            response = getattr(requests, str(verb).lower())(urlp, verify=self.verify)
+                            fullresp = {}
+                            fullresp[CODE] = response.status_code
+                            fullresp[VERB] = str(verb).lower()
+                            fullresp[LENGTH] = len(response.content)
+                            fullresp[URL] = urlp
+                        except requests.exceptions.ConnectionError:
+                            fullresp = {}
+                            fullresp[CODE] = 000
+                            fullresp[VERB] = str(verb).lower()
+                            fullresp[LENGTH] = 0
+                            fullresp[URL] = 'Connection error'
                         report.append(fullresp)
+
                 else:
                     print('Url/Payloads not correctly initialised')
         else:
@@ -163,12 +171,19 @@ class wtfuzz():
             if self.wtfconfig.url is not None:
                 url = self.wtfconfig.url
                 for verb in HTTPVERBS:
-                    response = getattr(requests, str(verb).lower())(url, allow_redirects=False, verify=self.verify)
-                    fullresp = {}
-                    fullresp[CODE] = response.status_code
-                    fullresp[VERB] = str(verb).lower()
-                    fullresp[LENGTH] = len(response.content)
-                    fullresp[URL] = url
+                    try:
+                        response = getattr(requests, str(verb).lower())(url, allow_redirects=False, verify=self.verify)
+                        fullresp = {}
+                        fullresp[CODE] = response.status_code
+                        fullresp[VERB] = str(verb).lower()
+                        fullresp[LENGTH] = len(response.content)
+                        fullresp[URL] = url
+                    except requests.exceptions.ConnectionError:
+                        fullresp = {}
+                        fullresp[CODE] = 000
+                        fullresp[VERB] = str(verb).lower()
+                        fullresp[LENGTH] = 0
+                        fullresp[URL] = 'Connection error'
                     report.append(fullresp)
             else:
                 print('Url/Payloads not correctly initialised')
