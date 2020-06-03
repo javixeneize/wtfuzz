@@ -40,7 +40,7 @@ jobs:
                 grep -i 'current_version = ' setup.cfg | head -1 | tr -d 'current_version = '
                 git config --local user.email "action@github.com"
                 git config --local user.name "GitHub Action"
-                bump2version minor
+                bump2version patch
                 grep -i 'current_version = ' setup.cfg | head -1 | tr -d 'current_version = '
 
             - name: Push changes if PR 'to-branch' is master
