@@ -11,11 +11,12 @@ URL = 'url'
 # trace and connect not working
 
 class wtfuzz():
-    def __init__(self):
+    def __init__(self, verify=True):
         self.wtfconfig = wtfconfig()
         self.responses = {}
         self.fullResponses = {}
         self.verbResponses = []
+        self.verify = verify
 
     def config(self, url='', filename=''):
         if url != '':
@@ -29,7 +30,7 @@ class wtfuzz():
             payloads = self.wtfconfig.payloads
             for payload in payloads:
                 urlp = url + payload
-                response = requests.get(urlp).status_code
+                response = requests.get(urlp, verify=self.verify).status_code
                 self.responses[urlp] = response
                 print(urlp + " --> " + str(response))
         else:
@@ -43,7 +44,7 @@ class wtfuzz():
             payloads = self.wtfconfig.payloads
             for payload in payloads:
                 urlp = url.replace(parameter, payload)
-                response = requests.get(urlp)
+                response = requests.get(urlp, verify=self.verify)
                 self.responses[urlp] = response.status_code
                 results['payload'] = payload
                 results['length'] = len(response.content)
@@ -66,7 +67,7 @@ class wtfuzz():
             payloads = list(range(20, 22))
             for payload in payloads:
                 urlp = url.replace(parameter, str(payload))
-                response = requests.get(urlp)
+                response = requests.get(urlp, verify=self.verify)
                 self.responses[urlp] = response.status_code
                 results['payload'] = payload
                 results['length'] = len(response.content)
@@ -88,7 +89,7 @@ class wtfuzz():
                 payloads = self.wtfconfig.payloads
                 for payload in payloads:
                     urlp = url + payload
-                    response = getattr(requests, str(verb).lower())(urlp).status_code
+                    response = getattr(requests, str(verb).lower())(urlp, verify=self.verify).status_code
                     self.responses[urlp] = response
                     print(urlp + " " + str(verb).lower() + " --> " + str(response))
             else:
@@ -103,7 +104,7 @@ class wtfuzz():
                 payloads = self.wtfconfig.payloads
                 for payload in payloads:
                     urlp = url + payload
-                    response = getattr(requests, str(verb).lower())(urlp)
+                    response = getattr(requests, str(verb).lower())(urlp, verify=self.verify)
                     fullresp = {}
                     fullresp[CODE] = response.status_code
                     fullresp[VERB] = str(verb).lower()
@@ -119,7 +120,7 @@ class wtfuzz():
         if self.wtfconfig.url is not None:
             url = self.wtfconfig.url
             for verb in HTTPVERBS:
-                response = getattr(requests, str(verb).lower())(url, allow_redirects=False)
+                response = getattr(requests, str(verb).lower())(url, allow_redirects=False, verify=self.verify)
                 fullresp = {}
                 fullresp[CODE] = response.status_code
                 fullresp[VERB] = str(verb).lower()
@@ -142,7 +143,7 @@ class wtfuzz():
 
                     for payload in payloads:
                         urlp = url + payload
-                        response = getattr(requests, str(verb).lower())(urlp)
+                        response = getattr(requests, str(verb).lower())(urlp, verify=self.verify)
                         fullresp = {}
                         fullresp[CODE] = response.status_code
                         fullresp[VERB] = str(verb).lower()
@@ -162,7 +163,7 @@ class wtfuzz():
             if self.wtfconfig.url is not None:
                 url = self.wtfconfig.url
                 for verb in HTTPVERBS:
-                    response = getattr(requests, str(verb).lower())(url, allow_redirects=False)
+                    response = getattr(requests, str(verb).lower())(url, allow_redirects=False, verify=self.verify)
                     fullresp = {}
                     fullresp[CODE] = response.status_code
                     fullresp[VERB] = str(verb).lower()
