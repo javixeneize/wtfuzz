@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="whatthefuzz",
-    version='0.2.3',
+    version = '0.2.4',
     description="Web fuzzer",
     url="https://github.com/javixeneize/wtfuzz",
     author="Javier Dominguez",
