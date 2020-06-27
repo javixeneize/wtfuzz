@@ -18,11 +18,11 @@ class wtfuzz():
         self.verbResponses = []
         self.verify = verify
 
-    def config(self, url='', filename=''):
+    def config(self, url='', filename='', original=False):
         if url != '':
             self.wtfconfig.setUrl(url)
         if filename != '':
-            self.wtfconfig.getPayloads(filename)
+            self.wtfconfig.getPayloads(filename, original)
 
     def sendSimpleRequest(self):
         if (self.wtfconfig.validConfig()):
@@ -140,24 +140,14 @@ class wtfuzz():
                 self.wtfconfig.url = item
                 if (self.wtfconfig.validConfig()):
                     url = self.wtfconfig.url
-
                     for payload in payloads:
                         urlp = url + payload
                         try:
                             response = getattr(requests, str(verb).lower())(urlp, verify=self.verify)
-                            fullresp = {}
-                            fullresp[CODE] = response.status_code
-                            fullresp[VERB] = str(verb).lower()
-                            fullresp[LENGTH] = len(response.content)
-                            fullresp[URL] = urlp
+                            fullresp = self.__set_response_data(response, verb, urlp)
                         except requests.exceptions.ConnectionError:
-                            fullresp = {}
-                            fullresp[CODE] = 000
-                            fullresp[VERB] = str(verb).lower()
-                            fullresp[LENGTH] = 0
-                            fullresp[URL] = 'Connection error'
+                            fullresp = self.__set_response_data(verb=str(verb).lower(), error=True)
                         report.append(fullresp)
-
                 else:
                     print('Url/Payloads not correctly initialised')
         else:
@@ -173,18 +163,50 @@ class wtfuzz():
                 for verb in HTTPVERBS:
                     try:
                         response = getattr(requests, str(verb).lower())(url, allow_redirects=False, verify=self.verify)
-                        fullresp = {}
-                        fullresp[CODE] = response.status_code
-                        fullresp[VERB] = str(verb).lower()
-                        fullresp[LENGTH] = len(response.content)
-                        fullresp[URL] = url
+                        fullresp = self.__set_response_data(response, verb, url)
                     except requests.exceptions.ConnectionError:
-                        fullresp = {}
-                        fullresp[CODE] = 000
-                        fullresp[VERB] = str(verb).lower()
-                        fullresp[LENGTH] = 0
-                        fullresp[URL] = 'Connection error'
+                        fullresp = self.__set_response_data(verb=str(verb).lower(), error=True)
                     report.append(fullresp)
             else:
                 print('Url/Payloads not correctly initialised')
         return report
+
+    def sendFullFoldersAndVerbsRequest_report(self, folders):
+        report = []
+        payloads = self.wtfconfig.payloads
+        for item in folders:
+            for verb in HTTPVERBS:
+                if item[-1] != '/':
+                    item = item + '/'
+                self.wtfconfig.url = item
+                if (self.wtfconfig.validConfig()):
+                    url = self.wtfconfig.url
+                    for payload in payloads:
+                        urlp = url + payload
+                        try:
+                            response = getattr(requests, str(verb).lower())(urlp, verify=self.verify)
+                            fullresp = self.__set_response_data(response, verb, urlp)
+                        except requests.exceptions.ConnectionError:
+                            fullresp = self.__set_response_data(verb=str(verb).lower(), error=True)
+                        report.append(fullresp)
+
+                else:
+                    print('Url/Payloads not correctly initialised')
+        else:
+            print("Error - Verb " + verb + " not valid")
+        return report
+
+    def __set_response_data(self, response='', verb='', url='', error=False):
+        fullresp = {}
+        if not error:
+
+            fullresp[CODE] = response.status_code
+            fullresp[VERB] = str(verb).lower()
+            fullresp[LENGTH] = len(response.content)
+            fullresp[URL] = url
+        else:
+            fullresp[CODE] = 0
+            fullresp[VERB] = str(verb).lower()
+            fullresp[LENGTH] = 0
+            fullresp[URL] = 'Connection error'
+        return fullresp
