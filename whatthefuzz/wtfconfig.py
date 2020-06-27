@@ -17,11 +17,12 @@ class wtfconfig():
             self.url = None
             print("url not valid")
 
-    def getPayloads(self, filename):
+    def getPayloads(self, filename, original=False):
         try:
             with open(filename, 'r') as file:
                 self.payloads = file.read().splitlines()
-                self.payloads.insert(0, '')  # needed to send the original request
+                if original:
+                    self.payloads.insert(0, '')  # sends the original request as well
         except FileNotFoundError:
             self.payloads = []
             print("File not found")
